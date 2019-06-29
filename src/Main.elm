@@ -2,8 +2,10 @@ module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
 import Browser.Events exposing (onAnimationFrameDelta)
+import Debug
 import Html exposing (Html)
 import Keyboard
+import Keyboard.Arrows exposing (Direction(..))
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Time
@@ -37,6 +39,10 @@ type alias Position =
     }
 
 
+type alias Player =
+    { position : Position }
+
+
 
 ---- MODEL ----
 
@@ -44,12 +50,13 @@ type alias Position =
 type alias Model =
     { count : Float
     , pressedKeys : List Keyboard.Key
+    , player : Player
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { count = 0, pressedKeys = [] }, Cmd.none )
+    ( { count = 0, pressedKeys = [], player = { position = { x = 0, y = 0 } } }, Cmd.none )
 
 
 
@@ -65,10 +72,48 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick time ->
-            ( { model | count = model.count + 1 }, Cmd.none )
+            ( { model | player = movePlayer model }, Cmd.none )
 
         KeyMsg keyMsg ->
             ( { model | pressedKeys = Keyboard.update keyMsg model.pressedKeys }, Cmd.none )
+
+
+movePlayer : Model -> Player
+movePlayer model =
+    let
+        direction =
+            Keyboard.Arrows.arrowsDirection model.pressedKeys
+
+        player =
+            model.player
+    in
+    case direction of
+        North ->
+            { player | position = { x = player.position.x, y = player.position.y - 1 } }
+
+        NorthEast ->
+            { player | position = { x = player.position.x + 1, y = player.position.y - 1 } }
+
+        East ->
+            { player | position = { x = player.position.x + 1, y = player.position.y } }
+
+        SouthEast ->
+            { player | position = { x = player.position.x + 1, y = player.position.y + 1 } }
+
+        South ->
+            { player | position = { x = player.position.x, y = player.position.y + 1 } }
+
+        SouthWest ->
+            { player | position = { x = player.position.x - 1, y = player.position.y + 1 } }
+
+        West ->
+            { player | position = { x = player.position.x - 1, y = player.position.y } }
+
+        NorthWest ->
+            { player | position = { x = player.position.x - 1, y = player.position.y - 1 } }
+
+        NoDirection ->
+            player
 
 
 
@@ -87,11 +132,7 @@ view model =
             , height (String.fromInt (gridSize.height * cellSize.height))
             ]
             []
-        , if not <| List.isEmpty model.pressedKeys then
-            renderCircle "red" { x = 0, y = 0 }
-
-          else
-            renderCircle "blue" { x = 0, y = 0 }
+        , renderCircle "red" model.player.position
         ]
 
 
