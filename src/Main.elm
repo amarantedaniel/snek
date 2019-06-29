@@ -1,6 +1,7 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
+import Browser.Events exposing (onAnimationFrameDelta)
 import Html exposing (Html, div, h1, img, text)
 import Html.Attributes exposing (src)
 
@@ -10,12 +11,12 @@ import Html.Attributes exposing (src)
 
 
 type alias Model =
-    {}
+    { count : Float }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( {}, Cmd.none )
+    ( { count = 0 }, Cmd.none )
 
 
 
@@ -23,12 +24,14 @@ init =
 
 
 type Msg
-    = NoOp
+    = Frame Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        Frame _ ->
+            ( { model | count = model.count + 1 }, Cmd.none )
 
 
 
@@ -37,10 +40,16 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ img [ src "/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working!" ]
-        ]
+    text ("Count: " ++ String.fromFloat model.count)
+
+
+
+---- SUBSCRIPTIONS ----
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    onAnimationFrameDelta Frame
 
 
 
@@ -53,5 +62,5 @@ main =
         { view = view
         , init = \_ -> init
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         }
