@@ -3,6 +3,7 @@ module Main exposing (Model, Msg(..), init, main, update, view)
 import Browser
 import Browser.Events exposing (onAnimationFrameDelta)
 import Html exposing (Html)
+import Keyboard
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Time
@@ -41,12 +42,14 @@ type alias Position =
 
 
 type alias Model =
-    { count : Float }
+    { count : Float
+    , pressedKeys : List Keyboard.Key
+    }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { count = 0 }, Cmd.none )
+    ( { count = 0, pressedKeys = [] }, Cmd.none )
 
 
 
@@ -55,6 +58,7 @@ init =
 
 type Msg
     = Tick Time.Posix
+    | KeyMsg Keyboard.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -62,6 +66,9 @@ update msg model =
     case msg of
         Tick time ->
             ( { model | count = model.count + 1 }, Cmd.none )
+
+        KeyMsg keyMsg ->
+            ( { model | pressedKeys = Keyboard.update keyMsg model.pressedKeys }, Cmd.none )
 
 
 
@@ -80,7 +87,11 @@ view model =
             , height (String.fromInt (gridSize.height * cellSize.height))
             ]
             []
-        , renderCircle "red" { x = 0, y = 0 }
+        , if not <| List.isEmpty model.pressedKeys then
+            renderCircle "red" { x = 0, y = 0 }
+
+          else
+            renderCircle "blue" { x = 0, y = 0 }
         ]
 
 
@@ -101,7 +112,7 @@ renderCircle color pos =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Time.every tickFrequency Tick
+    Sub.batch <| [ Sub.map KeyMsg Keyboard.subscriptions, Time.every tickFrequency Tick ]
 
 
 
