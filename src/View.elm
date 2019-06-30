@@ -1,6 +1,6 @@
 module View exposing (renderCircle, view)
 
-import Html exposing (Html)
+import Html exposing (..)
 import Model exposing (Model, Position, Size, Snake)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -17,15 +17,18 @@ cellSize =
 
 view : Model -> Html Msg
 view model =
-    svg
-        [ width "100%"
-        , height "auto"
-        , viewBox ("0 0 " ++ String.fromInt (gridSize.width * cellSize.width) ++ " " ++ String.fromInt (gridSize.height * cellSize.height))
+    div []
+        [ h1 [] [ Html.text "snek" ]
+        , svg
+            [ width "50%"
+            , height "auto"
+            , viewBox ("0 0 " ++ String.fromInt (gridSize.width * cellSize.width) ++ " " ++ String.fromInt (gridSize.height * cellSize.height))
+            ]
+            (renderBackground
+                ++ renderSnake model.snake
+                ++ renderFood model.food
+            )
         ]
-        (renderBackground
-            ++ renderSnake model.snake
-            ++ renderFood model.food
-        )
 
 
 renderBackground : List (Html Msg)
