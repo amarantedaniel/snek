@@ -55,11 +55,27 @@ getDirection pressedKeys =
 
 moveSnake : Snake -> Snake
 moveSnake snake =
-    { snake | position = updatePosition snake.position snake.direction }
+    { snake | body = updateBody snake.body snake.direction }
 
 
-updatePosition : Position -> Direction -> Position
-updatePosition position direction =
+updateBody : List Position -> Direction -> List Position
+updateBody body direction =
+    let
+        newHead =
+            body
+                |> List.head
+                |> Maybe.map (updatePosition direction)
+    in
+    case newHead of
+        Just head ->
+            head :: body
+
+        Nothing ->
+            body
+
+
+updatePosition : Direction -> Position -> Position
+updatePosition direction position =
     case direction of
         North ->
             { position | y = position.y - 1 }

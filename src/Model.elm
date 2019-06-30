@@ -12,7 +12,9 @@ type alias Model =
 
 
 type alias Snake =
-    { position : Position, direction : Direction }
+    { body : List Position
+    , direction : Direction
+    }
 
 
 type alias Size =
@@ -28,7 +30,7 @@ type alias Position =
 
 
 initialSnake =
-    { position = { x = 0, y = 0 }, direction = NoDirection }
+    { body = [ { x = 1, y = 0 }, { x = 0, y = 0 } ], direction = NoDirection }
 
 
 initialModel : Model

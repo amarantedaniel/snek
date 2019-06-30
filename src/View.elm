@@ -1,7 +1,7 @@
 module View exposing (renderCircle, view)
 
 import Html exposing (Html)
-import Model exposing (Model, Position, Size)
+import Model exposing (Model, Position, Size, Snake)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Update exposing (Msg(..))
@@ -22,13 +22,18 @@ view model =
         , height "auto"
         , viewBox ("0 0 " ++ String.fromInt (gridSize.width * cellSize.width) ++ " " ++ String.fromInt (gridSize.height * cellSize.height))
         ]
-        [ rect
+        (rect
             [ width (String.fromInt (gridSize.width * cellSize.height))
             , height (String.fromInt (gridSize.height * cellSize.height))
             ]
             []
-        , renderCircle "red" model.snake.position
-        ]
+            :: renderSnake model.snake
+        )
+
+
+renderSnake : Snake -> List (Html Msg)
+renderSnake snake =
+    List.map (renderCircle "red") snake.body
 
 
 renderCircle : String -> Position -> Html Msg
