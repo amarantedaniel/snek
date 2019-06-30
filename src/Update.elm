@@ -3,19 +3,21 @@ module Update exposing (Msg(..), update)
 import Keyboard
 import Keyboard.Arrows exposing (Direction(..))
 import Model exposing (Model, Position, Snake)
+import Random
 import Time
 
 
 type Msg
     = Tick Time.Posix
     | KeyMsg Keyboard.Msg
+    | NewFood Position
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick time ->
-            ( runLoop model, Cmd.none )
+            ( runLoop model, Random.generate NewFood repositionFood )
 
         KeyMsg keyMsg ->
             let
@@ -28,6 +30,9 @@ update msg model =
               }
             , Cmd.none
             )
+
+        NewFood food ->
+            ( { model | food = food }, Cmd.none )
 
 
 updateSnakeDirection : List Keyboard.Key -> Snake -> Snake
@@ -108,3 +113,8 @@ updateBody snakeAteFood { head, body } =
 removeLast : List a -> List a
 removeLast list =
     List.take (List.length list - 1) list
+
+
+repositionFood : Random.Generator Position
+repositionFood =
+    Random.map2 Position (Random.int 0 40) (Random.int 0 20)
