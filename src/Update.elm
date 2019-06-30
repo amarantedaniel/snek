@@ -68,10 +68,15 @@ updateBody body direction =
     in
     case newHead of
         Just head ->
-            head :: body
+            head :: removeLast body
 
         Nothing ->
             body
+
+
+removeLast : List a -> List a
+removeLast list =
+    List.take (List.length list - 1) list
 
 
 updatePosition : Direction -> Position -> Position
