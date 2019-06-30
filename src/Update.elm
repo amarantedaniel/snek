@@ -15,19 +15,47 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick time ->
-            ( { model | player = movePlayer model }, Cmd.none )
+            ( { model | player = movePlayer model.player }, Cmd.none )
 
         KeyMsg keyMsg ->
-            ( { model | pressedKeys = Keyboard.update keyMsg model.pressedKeys }, Cmd.none )
+            let
+                newPressedKeys =
+                    Keyboard.update keyMsg model.pressedKeys
+            in
+            ( { model
+                | pressedKeys = newPressedKeys
+                , player = updatePlayerDirection newPressedKeys model.player
+              }
+            , Cmd.none
+            )
 
 
-movePlayer : Model -> Player
-movePlayer { player, pressedKeys } =
+updatePlayerDirection : List Keyboard.Key -> Player -> Player
+updatePlayerDirection pressedKeys player =
+    case getDirection pressedKeys of
+        Just direction ->
+            { player | direction = direction }
+
+        Nothing ->
+            player
+
+
+getDirection : List Keyboard.Key -> Maybe Direction
+getDirection pressedKeys =
     let
         direction =
             Keyboard.Arrows.arrowsDirection pressedKeys
     in
-    { player | position = updatePosition player.position direction }
+    if List.member direction [ North, East, South, West ] then
+        Just direction
+
+    else
+        Nothing
+
+
+movePlayer : Player -> Player
+movePlayer player =
+    { player | position = updatePosition player.position player.direction }
 
 
 updatePosition : Position -> Direction -> Position
@@ -36,26 +64,14 @@ updatePosition position direction =
         North ->
             { position | y = position.y - 1 }
 
-        NorthEast ->
-            { position | x = position.x + 1, y = position.y - 1 }
-
         East ->
             { position | x = position.x + 1 }
-
-        SouthEast ->
-            { position | x = position.x + 1, y = position.y + 1 }
 
         South ->
             { position | y = position.y + 1 }
 
-        SouthWest ->
-            { position | x = position.x - 1, y = position.y + 1 }
-
         West ->
             { position | x = position.x - 1 }
 
-        NorthWest ->
-            { position | x = position.x - 1, y = position.y - 1 }
-
-        NoDirection ->
+        _ ->
             position

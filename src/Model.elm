@@ -1,6 +1,7 @@
 module Model exposing (Model, Player, Position, Size, initialModel)
 
 import Keyboard
+import Keyboard.Arrows exposing (Direction(..))
 
 
 type alias Model =
@@ -11,7 +12,7 @@ type alias Model =
 
 
 type alias Player =
-    { position : Position }
+    { position : Position, direction : Direction }
 
 
 type alias Size =
@@ -26,6 +27,10 @@ type alias Position =
     }
 
 
+initialPlayer =
+    { position = { x = 0, y = 0 }, direction = NoDirection }
+
+
 initialModel : Model
 initialModel =
-    { count = 0, pressedKeys = [], player = { position = { x = 0, y = 0 } } }
+    { count = 0, pressedKeys = [], player = initialPlayer }
