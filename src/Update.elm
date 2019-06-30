@@ -15,7 +15,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick time ->
-            ( { model | snake = moveSnake model.snake }, Cmd.none )
+            ( runLoop model, Cmd.none )
 
         KeyMsg keyMsg ->
             let
@@ -53,11 +53,26 @@ getDirection pressedKeys =
         Nothing
 
 
-moveSnake : Snake -> Snake
-moveSnake snake =
+runLoop : Model -> Model
+runLoop model =
+    let
+        newHead =
+            updateHead model.snake
+
+        snakeAteFood =
+            newHead == model.food
+
+        newSnake =
+            moveSnake newHead snakeAteFood model.snake
+    in
+    { model | snake = newSnake }
+
+
+moveSnake : Position -> Bool -> Snake -> Snake
+moveSnake newHead snakeAteFood snake =
     { snake
-        | head = updateHead snake
-        , body = updateBody snake
+        | head = newHead
+        , body = updateBody snakeAteFood snake
     }
 
 
@@ -80,9 +95,14 @@ updateHead { head, direction } =
             head
 
 
-updateBody : Snake -> List Position
-updateBody { head, body } =
-    head :: removeLast body
+updateBody : Bool -> Snake -> List Position
+updateBody snakeAteFood { head, body } =
+    case snakeAteFood of
+        True ->
+            head :: body
+
+        False ->
+            head :: removeLast body
 
 
 removeLast : List a -> List a
