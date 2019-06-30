@@ -22,12 +22,14 @@ view model =
         , height "auto"
         , viewBox ("0 0 " ++ String.fromInt (gridSize.width * cellSize.width) ++ " " ++ String.fromInt (gridSize.height * cellSize.height))
         ]
-        (rect
+        ((rect
             [ width (String.fromInt (gridSize.width * cellSize.height))
             , height (String.fromInt (gridSize.height * cellSize.height))
             ]
             []
             :: renderSnake model.snake
+         )
+            ++ [ renderCircle "blue" model.food ]
         )
 
 
