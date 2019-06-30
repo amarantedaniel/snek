@@ -1,8 +1,8 @@
-module Update exposing (Msg(..), movePlayer, update, updatePosition)
+module Update exposing (Msg(..), moveSnake, update, updatePosition)
 
 import Keyboard
 import Keyboard.Arrows exposing (Direction(..))
-import Model exposing (Model, Player, Position)
+import Model exposing (Model, Position, Snake)
 import Time
 
 
@@ -15,7 +15,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick time ->
-            ( { model | player = movePlayer model.player }, Cmd.none )
+            ( { model | snake = moveSnake model.snake }, Cmd.none )
 
         KeyMsg keyMsg ->
             let
@@ -24,20 +24,20 @@ update msg model =
             in
             ( { model
                 | pressedKeys = newPressedKeys
-                , player = updatePlayerDirection newPressedKeys model.player
+                , snake = updateSnakeDirection newPressedKeys model.snake
               }
             , Cmd.none
             )
 
 
-updatePlayerDirection : List Keyboard.Key -> Player -> Player
-updatePlayerDirection pressedKeys player =
+updateSnakeDirection : List Keyboard.Key -> Snake -> Snake
+updateSnakeDirection pressedKeys snake =
     case getDirection pressedKeys of
         Just direction ->
-            { player | direction = direction }
+            { snake | direction = direction }
 
         Nothing ->
-            player
+            snake
 
 
 getDirection : List Keyboard.Key -> Maybe Direction
@@ -53,9 +53,9 @@ getDirection pressedKeys =
         Nothing
 
 
-movePlayer : Player -> Player
-movePlayer player =
-    { player | position = updatePosition player.position player.direction }
+moveSnake : Snake -> Snake
+moveSnake snake =
+    { snake | position = updatePosition snake.position snake.direction }
 
 
 updatePosition : Position -> Direction -> Position

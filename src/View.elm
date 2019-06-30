@@ -27,7 +27,7 @@ view model =
             , height (String.fromInt (gridSize.height * cellSize.height))
             ]
             []
-        , renderCircle "red" model.player.position
+        , renderCircle "red" model.snake.position
         ]
 
 

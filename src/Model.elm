@@ -1,4 +1,4 @@
-module Model exposing (Model, Player, Position, Size, initialModel)
+module Model exposing (Model, Position, Size, Snake, initialModel)
 
 import Keyboard
 import Keyboard.Arrows exposing (Direction(..))
@@ -7,11 +7,11 @@ import Keyboard.Arrows exposing (Direction(..))
 type alias Model =
     { count : Float
     , pressedKeys : List Keyboard.Key
-    , player : Player
+    , snake : Snake
     }
 
 
-type alias Player =
+type alias Snake =
     { position : Position, direction : Direction }
 
 
@@ -27,10 +27,10 @@ type alias Position =
     }
 
 
-initialPlayer =
+initialSnake =
     { position = { x = 0, y = 0 }, direction = NoDirection }
 
 
 initialModel : Model
 initialModel =
-    { count = 0, pressedKeys = [], player = initialPlayer }
+    { count = 0, pressedKeys = [], snake = initialSnake }
