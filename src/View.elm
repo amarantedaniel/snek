@@ -22,20 +22,30 @@ view model =
         , height "auto"
         , viewBox ("0 0 " ++ String.fromInt (gridSize.width * cellSize.width) ++ " " ++ String.fromInt (gridSize.height * cellSize.height))
         ]
-        ((rect
-            [ width (String.fromInt (gridSize.width * cellSize.height))
-            , height (String.fromInt (gridSize.height * cellSize.height))
-            ]
-            []
-            :: renderSnake model.snake
-         )
-            ++ [ renderCircle "blue" model.food ]
+        (renderBackground
+            ++ renderSnake model.snake
+            ++ renderFood model.food
         )
+
+
+renderBackground : List (Html Msg)
+renderBackground =
+    [ rect
+        [ width (String.fromInt (gridSize.width * cellSize.height))
+        , height (String.fromInt (gridSize.height * cellSize.height))
+        ]
+        []
+    ]
 
 
 renderSnake : Snake -> List (Html Msg)
 renderSnake snake =
     renderCircle "red" snake.head :: List.map (renderCircle "red") snake.body
+
+
+renderFood : Position -> List (Html Msg)
+renderFood food =
+    [ renderCircle "blue" food ]
 
 
 renderCircle : String -> Position -> Html Msg
