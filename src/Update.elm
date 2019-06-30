@@ -1,4 +1,4 @@
-module Update exposing (Msg(..), moveSnake, update, updatePosition)
+module Update exposing (Msg(..), update)
 
 import Keyboard
 import Keyboard.Arrows exposing (Direction(..))
@@ -55,44 +55,36 @@ getDirection pressedKeys =
 
 moveSnake : Snake -> Snake
 moveSnake snake =
-    { snake | body = updateBody snake.body snake.direction }
+    { snake
+        | head = updateHead snake
+        , body = updateBody snake
+    }
 
 
-updateBody : List Position -> Direction -> List Position
-updateBody body direction =
-    let
-        newHead =
-            body
-                |> List.head
-                |> Maybe.map (updatePosition direction)
-    in
-    case newHead of
-        Just head ->
-            head :: removeLast body
+updateHead : Snake -> Position
+updateHead { head, direction } =
+    case direction of
+        North ->
+            { head | y = head.y - 1 }
 
-        Nothing ->
-            body
+        East ->
+            { head | x = head.x + 1 }
+
+        South ->
+            { head | y = head.y + 1 }
+
+        West ->
+            { head | x = head.x - 1 }
+
+        _ ->
+            head
+
+
+updateBody : Snake -> List Position
+updateBody { head, body } =
+    head :: removeLast body
 
 
 removeLast : List a -> List a
 removeLast list =
     List.take (List.length list - 1) list
-
-
-updatePosition : Direction -> Position -> Position
-updatePosition direction position =
-    case direction of
-        North ->
-            { position | y = position.y - 1 }
-
-        East ->
-            { position | x = position.x + 1 }
-
-        South ->
-            { position | y = position.y + 1 }
-
-        West ->
-            { position | x = position.x - 1 }
-
-        _ ->
-            position

@@ -33,7 +33,7 @@ view model =
 
 renderSnake : Snake -> List (Html Msg)
 renderSnake snake =
-    List.map (renderCircle "red") snake.body
+    renderCircle "red" snake.head :: List.map (renderCircle "red") snake.body
 
 
 renderCircle : String -> Position -> Html Msg
