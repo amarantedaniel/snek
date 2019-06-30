@@ -17,7 +17,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick time ->
-            ( runLoop model, Random.generate NewFood repositionFood )
+            runLoop model
 
         KeyMsg keyMsg ->
             let
@@ -58,7 +58,7 @@ getDirection pressedKeys =
         Nothing
 
 
-runLoop : Model -> Model
+runLoop : Model -> ( Model, Cmd Msg )
 runLoop model =
     let
         newHead =
@@ -70,7 +70,7 @@ runLoop model =
         newSnake =
             moveSnake newHead snakeAteFood model.snake
     in
-    { model | snake = newSnake }
+    ( { model | snake = newSnake }, repositionFood snakeAteFood )
 
 
 moveSnake : Position -> Bool -> Snake -> Snake
@@ -115,6 +115,11 @@ removeLast list =
     List.take (List.length list - 1) list
 
 
-repositionFood : Random.Generator Position
-repositionFood =
-    Random.map2 Position (Random.int 0 40) (Random.int 0 20)
+repositionFood : Bool -> Cmd Msg
+repositionFood snakeAteFood =
+    if snakeAteFood then
+        Random.map2 Position (Random.int 0 40) (Random.int 0 20)
+            |> Random.generate NewFood
+
+    else
+        Cmd.none
