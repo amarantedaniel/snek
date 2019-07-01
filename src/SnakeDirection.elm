@@ -1,34 +1,30 @@
-module SnakeDirection exposing (updateSnakeDirection)
+module SnakeDirection exposing (updateLastDirection, updateSnakeDirection)
 
 import Keyboard
 import Keyboard.Arrows exposing (Direction(..))
-import Model exposing (Snake)
+import Model exposing (Model, Snake)
 
 
-updateSnakeDirection : List Keyboard.Key -> Snake -> Snake
-updateSnakeDirection pressedKeys snake =
+updateLastDirection : List Keyboard.Key -> Model -> Direction
+updateLastDirection pressedKeys model =
     let
         direction =
-            pressedKeys
-                |> getDirection
-                |> validateDirectionExists
-                |> validateDirectionIsValid snake
+            getDirection pressedKeys
     in
     case direction of
         Just validDirection ->
-            { snake | direction = validDirection }
+            validDirection
 
         Nothing ->
-            snake
+            model.lastDirection
 
 
-getDirection : List Keyboard.Key -> Direction
+getDirection : List Keyboard.Key -> Maybe Direction
 getDirection pressedKeys =
-    Keyboard.Arrows.arrowsDirection pressedKeys
-
-
-validateDirectionExists : Direction -> Maybe Direction
-validateDirectionExists direction =
+    let
+        direction =
+            Keyboard.Arrows.arrowsDirection pressedKeys
+    in
     if List.member direction [ North, East, South, West ] then
         Just direction
 
@@ -36,20 +32,20 @@ validateDirectionExists direction =
         Nothing
 
 
-validateDirectionIsValid : Snake -> Maybe Direction -> Maybe Direction
-validateDirectionIsValid snake direction =
+updateSnakeDirection : Direction -> Snake -> Snake
+updateSnakeDirection direction snake =
     case ( snake.direction, direction ) of
-        ( West, Just East ) ->
-            Nothing
+        ( West, East ) ->
+            snake
 
-        ( East, Just West ) ->
-            Nothing
+        ( East, West ) ->
+            snake
 
-        ( North, Just South ) ->
-            Nothing
+        ( North, South ) ->
+            snake
 
-        ( South, Just North ) ->
-            Nothing
+        ( South, North ) ->
+            snake
 
         ( _, _ ) ->
-            direction
+            { snake | direction = direction }

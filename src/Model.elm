@@ -7,6 +7,7 @@ import Keyboard.Arrows exposing (Direction(..))
 type alias Model =
     { count : Float
     , pressedKeys : List Keyboard.Key
+    , lastDirection : Direction
     , snake : Snake
     , food : Position
     , gameOver : Bool
@@ -45,4 +46,5 @@ initialModel =
     , snake = initialSnake
     , food = { x = 10, y = 10 }
     , gameOver = False
+    , lastDirection = East
     }

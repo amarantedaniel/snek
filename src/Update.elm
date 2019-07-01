@@ -5,7 +5,7 @@ import Keyboard.Arrows exposing (Direction(..))
 import Model exposing (Model, Position, Snake)
 import Random
 import Size exposing (gridSize)
-import SnakeDirection exposing (updateSnakeDirection)
+import SnakeDirection exposing (updateLastDirection, updateSnakeDirection)
 import Time
 
 
@@ -32,7 +32,7 @@ update msg model =
             in
             ( { model
                 | pressedKeys = newPressedKeys
-                , snake = updateSnakeDirection newPressedKeys model.snake
+                , lastDirection = updateLastDirection newPressedKeys model
               }
             , Cmd.none
             )
@@ -44,14 +44,17 @@ update msg model =
 runLoop : Model -> ( Model, Cmd Msg )
 runLoop model =
     let
+        snake =
+            updateSnakeDirection model.lastDirection model.snake
+
         newHead =
-            updateHead model.snake
+            updateHead snake
 
         snakeAteFood =
             newHead == model.food
 
         newSnake =
-            moveSnake newHead snakeAteFood model.snake
+            moveSnake newHead snakeAteFood snake
     in
     ( { model
         | snake = newSnake
