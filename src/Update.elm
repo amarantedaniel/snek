@@ -5,6 +5,7 @@ import Keyboard.Arrows exposing (Direction(..))
 import Model exposing (Model, Position, Snake)
 import Random
 import Size exposing (gridSize)
+import SnakeDirection exposing (updateSnakeDirection)
 import Time
 
 
@@ -38,56 +39,6 @@ update msg model =
 
         NewFood food ->
             ( { model | food = food }, Cmd.none )
-
-
-updateSnakeDirection : List Keyboard.Key -> Snake -> Snake
-updateSnakeDirection pressedKeys snake =
-    let
-        direction =
-            pressedKeys
-                |> getDirection
-                |> validateDirectionExists
-                |> validateDirectionIsValid snake
-    in
-    case direction of
-        Just validDirection ->
-            { snake | direction = validDirection }
-
-        Nothing ->
-            snake
-
-
-getDirection : List Keyboard.Key -> Direction
-getDirection pressedKeys =
-    Keyboard.Arrows.arrowsDirection pressedKeys
-
-
-validateDirectionExists : Direction -> Maybe Direction
-validateDirectionExists direction =
-    if List.member direction [ North, East, South, West ] then
-        Just direction
-
-    else
-        Nothing
-
-
-validateDirectionIsValid : Snake -> Maybe Direction -> Maybe Direction
-validateDirectionIsValid snake direction =
-    case ( snake.direction, direction ) of
-        ( West, Just East ) ->
-            Nothing
-
-        ( East, Just West ) ->
-            Nothing
-
-        ( North, Just South ) ->
-            Nothing
-
-        ( South, Just North ) ->
-            Nothing
-
-        ( _, _ ) ->
-            direction
 
 
 runLoop : Model -> ( Model, Cmd Msg )
