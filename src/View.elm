@@ -21,12 +21,12 @@ view model =
         [ h1 [] [ Html.text "snek" ]
         , svg
             [ width "50%"
-            , height "auto"
             , viewBox ("0 0 " ++ String.fromInt (gridSize.width * cellSize.width) ++ " " ++ String.fromInt (gridSize.height * cellSize.height))
             ]
             (renderBackground
                 ++ renderSnake model.snake
                 ++ renderFood model.food
+                ++ renderGameOver model.gameOver
             )
         ]
 
@@ -70,3 +70,18 @@ renderFood food =
         ]
         []
     ]
+
+
+renderGameOver : Bool -> List (Html Msg)
+renderGameOver gameOver =
+    [ Svg.text_
+        [ x (String.fromInt ((gridSize.width * cellSize.width) // 2))
+        , y (String.fromInt ((gridSize.height * cellSize.height) // 2))
+        , textAnchor "middle"
+        , fill "red"
+        , fontWeight "bold"
+        , fontSize "100"
+        ]
+        [ Svg.text "GAME OVER" ]
+    ]
+        |> List.filter (\_ -> gameOver)
