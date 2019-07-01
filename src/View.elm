@@ -1,4 +1,4 @@
-module View exposing (renderCircle, view)
+module View exposing (view)
 
 import Html exposing (..)
 import Model exposing (Model, Position, Size, Snake)
@@ -29,7 +29,7 @@ view model =
                 ++ renderFood model.food
             )
         , div []
-            [ Html.text ("(" ++ String.fromInt model.food.x ++ ", " ++ String.fromInt model.food.x ++ ")") ]
+            [ Html.text ("(" ++ String.fromInt model.food.x ++ ", " ++ String.fromInt model.food.y ++ ")") ]
         ]
 
 
@@ -38,6 +38,7 @@ renderBackground =
     [ rect
         [ width (String.fromInt (gridSize.width * cellSize.height))
         , height (String.fromInt (gridSize.height * cellSize.height))
+        , Svg.Attributes.style "fill:#8cbf00"
         ]
         []
     ]
@@ -45,20 +46,29 @@ renderBackground =
 
 renderSnake : Snake -> List (Html Msg)
 renderSnake snake =
-    renderCircle "red" snake.head :: List.map (renderCircle "red") snake.body
+    renderSnakePart snake.head :: List.map renderSnakePart snake.body
+
+
+renderSnakePart : Position -> Html Msg
+renderSnakePart position =
+    rect
+        [ width (String.fromInt cellSize.width)
+        , height (String.fromInt cellSize.height)
+        , x (String.fromInt (position.x * cellSize.width))
+        , y (String.fromInt (position.y * cellSize.height))
+        , Svg.Attributes.style "fill:black;stroke:gray"
+        ]
+        []
 
 
 renderFood : Position -> List (Html Msg)
 renderFood food =
-    [ renderCircle "blue" food ]
-
-
-renderCircle : String -> Position -> Html Msg
-renderCircle color pos =
-    circle
-        [ cx (String.fromInt ((pos.x * cellSize.width) + (cellSize.width // 2)))
-        , cy (String.fromInt ((pos.y * cellSize.height) + (cellSize.height // 2)))
-        , r (String.fromInt (cellSize.height // 2))
-        , fill color
+    [ circle
+        [ cx (String.fromInt ((food.x * cellSize.width) + (cellSize.width // 2)))
+        , cy (String.fromInt ((food.y * cellSize.height) + (cellSize.height // 2)))
+        , r (String.fromInt (cellSize.height // 3))
+        , fill "black"
+        , stroke "gray"
         ]
         []
+    ]

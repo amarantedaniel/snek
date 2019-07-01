@@ -145,7 +145,7 @@ repositionFood : Bool -> Cmd Msg
 repositionFood snakeAteFood =
     if snakeAteFood then
         Random.generate NewFood <|
-            Random.map2 Position (Random.int 0 40) (Random.int 0 20)
+            Random.map2 Position (Random.int 0 39) (Random.int 0 19)
 
     else
         Cmd.none
