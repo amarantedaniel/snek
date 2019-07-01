@@ -17,7 +17,11 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick time ->
-            runLoop model
+            if model.gameOver then
+                ( model, Cmd.none )
+
+            else
+                runLoop model
 
         KeyMsg keyMsg ->
             let
@@ -97,7 +101,12 @@ runLoop model =
         newSnake =
             moveSnake newHead snakeAteFood model.snake
     in
-    ( { model | snake = newSnake }, repositionFood snakeAteFood )
+    ( { model
+        | snake = newSnake
+        , gameOver = checkIfHitSelf newSnake
+      }
+    , repositionFood snakeAteFood
+    )
 
 
 moveSnake : Position -> Bool -> Snake -> Snake
@@ -112,16 +121,32 @@ updateHead : Snake -> Position
 updateHead { head, direction } =
     case direction of
         North ->
-            { head | y = head.y - 1 }
+            if head.y - 1 < 0 then
+                { head | y = 19 }
+
+            else
+                { head | y = head.y - 1 }
 
         East ->
-            { head | x = head.x + 1 }
+            if head.x + 1 > 39 then
+                { head | x = 0 }
+
+            else
+                { head | x = head.x + 1 }
 
         South ->
-            { head | y = head.y + 1 }
+            if head.y + 1 > 19 then
+                { head | y = 0 }
+
+            else
+                { head | y = head.y + 1 }
 
         West ->
-            { head | x = head.x - 1 }
+            if head.x - 1 < 0 then
+                { head | x = 39 }
+
+            else
+                { head | x = head.x - 1 }
 
         _ ->
             head
@@ -149,3 +174,14 @@ repositionFood snakeAteFood =
 
     else
         Cmd.none
+
+
+checkIfGameOver : Snake -> Bool
+checkIfGameOver snake =
+    snake
+        |> checkIfHitSelf
+
+
+checkIfHitSelf : Snake -> Bool
+checkIfHitSelf snake =
+    List.member snake.head snake.body

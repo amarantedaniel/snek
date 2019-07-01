@@ -9,6 +9,7 @@ type alias Model =
     , pressedKeys : List Keyboard.Key
     , snake : Snake
     , food : Position
+    , gameOver : Bool
     }
 
 
@@ -48,4 +49,5 @@ initialModel =
     , pressedKeys = []
     , snake = initialSnake
     , food = { x = 10, y = 10 }
+    , gameOver = False
     }

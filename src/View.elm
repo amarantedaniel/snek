@@ -28,8 +28,6 @@ view model =
                 ++ renderSnake model.snake
                 ++ renderFood model.food
             )
-        , div []
-            [ Html.text ("(" ++ String.fromInt model.food.x ++ ", " ++ String.fromInt model.food.y ++ ")") ]
         ]
 
 
