@@ -4,6 +4,7 @@ import Keyboard
 import Keyboard.Arrows exposing (Direction(..))
 import Model exposing (Model, Position, Snake)
 import Random
+import Size exposing (gridSize)
 import Time
 
 
@@ -121,16 +122,16 @@ updateHead : Snake -> Position
 updateHead { head, direction } =
     case direction of
         North ->
-            { head | y = modBy 20 (head.y - 1) }
+            { head | y = modBy gridSize.height (head.y - 1) }
 
         East ->
-            { head | x = modBy 40 (head.x + 1) }
+            { head | x = modBy gridSize.width (head.x + 1) }
 
         South ->
-            { head | y = modBy 20 (head.y + 1) }
+            { head | y = modBy gridSize.height (head.y + 1) }
 
         West ->
-            { head | x = modBy 40 (head.x - 1) }
+            { head | x = modBy gridSize.width (head.x - 1) }
 
         _ ->
             head
@@ -152,9 +153,16 @@ removeLast list =
 
 repositionFood : Bool -> Cmd Msg
 repositionFood snakeAteFood =
+    let
+        randomWidth =
+            Random.int 0 (gridSize.width - 1)
+
+        randomHeight =
+            Random.int 0 (gridSize.height - 1)
+    in
     if snakeAteFood then
         Random.generate NewFood <|
-            Random.map2 Position (Random.int 0 39) (Random.int 0 19)
+            Random.map2 Position randomWidth randomHeight
 
     else
         Cmd.none

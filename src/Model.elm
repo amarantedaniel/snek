@@ -1,4 +1,4 @@
-module Model exposing (Model, Position, Size, Snake, initialModel)
+module Model exposing (Model, Position, Snake, initialModel)
 
 import Keyboard
 import Keyboard.Arrows exposing (Direction(..))
@@ -20,18 +20,13 @@ type alias Snake =
     }
 
 
-type alias Size =
-    { width : Int
-    , height : Int
-    }
-
-
 type alias Position =
     { x : Int
     , y : Int
     }
 
 
+initialSnake : Snake
 initialSnake =
     { head = { x = 3, y = 0 }
     , body =

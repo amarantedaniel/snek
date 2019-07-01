@@ -1,18 +1,11 @@
 module View exposing (view)
 
 import Html exposing (..)
-import Model exposing (Model, Position, Size, Snake)
+import Model exposing (Model, Position, Snake)
+import Size exposing (cellSize, gridSize)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Update exposing (Msg(..))
-
-
-gridSize =
-    Size 40 20
-
-
-cellSize =
-    Size 20 20
 
 
 view : Model -> Html Msg
@@ -21,7 +14,7 @@ view model =
         [ h1 [] [ Html.text "snek" ]
         , svg
             [ width "50%"
-            , viewBox ("0 0 " ++ String.fromInt (gridSize.width * cellSize.width) ++ " " ++ String.fromInt (gridSize.height * cellSize.height))
+            , viewBox ("0 0 " ++ String.fromInt (gridSize.width * cellSize) ++ " " ++ String.fromInt (gridSize.height * cellSize))
             ]
             (renderBackground
                 ++ renderSnake model.snake
@@ -34,8 +27,8 @@ view model =
 renderBackground : List (Html Msg)
 renderBackground =
     [ rect
-        [ width (String.fromInt (gridSize.width * cellSize.height))
-        , height (String.fromInt (gridSize.height * cellSize.height))
+        [ width (String.fromInt (gridSize.width * cellSize))
+        , height (String.fromInt (gridSize.height * cellSize))
         , Svg.Attributes.style "fill:#8cbf00"
         ]
         []
@@ -50,10 +43,10 @@ renderSnake snake =
 renderSnakePart : Position -> Html Msg
 renderSnakePart position =
     rect
-        [ width (String.fromInt cellSize.width)
-        , height (String.fromInt cellSize.height)
-        , x (String.fromInt (position.x * cellSize.width))
-        , y (String.fromInt (position.y * cellSize.height))
+        [ width (String.fromInt cellSize)
+        , height (String.fromInt cellSize)
+        , x (String.fromInt (position.x * cellSize))
+        , y (String.fromInt (position.y * cellSize))
         , Svg.Attributes.style "fill:black;stroke:gray"
         ]
         []
@@ -62,9 +55,9 @@ renderSnakePart position =
 renderFood : Position -> List (Html Msg)
 renderFood food =
     [ circle
-        [ cx (String.fromInt ((food.x * cellSize.width) + (cellSize.width // 2)))
-        , cy (String.fromInt ((food.y * cellSize.height) + (cellSize.height // 2)))
-        , r (String.fromInt (cellSize.height // 3))
+        [ cx (String.fromInt ((food.x * cellSize) + (cellSize // 2)))
+        , cy (String.fromInt ((food.y * cellSize) + (cellSize // 2)))
+        , r (String.fromInt (cellSize // 3))
         , fill "black"
         , stroke "gray"
         ]
@@ -75,8 +68,8 @@ renderFood food =
 renderGameOver : Bool -> List (Html Msg)
 renderGameOver gameOver =
     [ Svg.text_
-        [ x (String.fromInt ((gridSize.width * cellSize.width) // 2))
-        , y (String.fromInt ((gridSize.height * cellSize.height) // 2))
+        [ x (String.fromInt ((gridSize.width * cellSize) // 2))
+        , y (String.fromInt ((gridSize.height * cellSize) // 2))
         , textAnchor "middle"
         , fill "red"
         , fontWeight "bold"
