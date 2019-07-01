@@ -5,6 +5,16 @@ import Keyboard.Arrows exposing (Direction(..))
 import Model exposing (Model, Snake)
 
 
+validDirections : List Direction
+validDirections =
+    [ North, East, South, West ]
+
+
+invalidTransitions : List ( Direction, Direction )
+invalidTransitions =
+    [ ( West, East ), ( East, West ), ( North, South ), ( South, North ) ]
+
+
 updateLastDirection : List Keyboard.Key -> Model -> Direction
 updateLastDirection pressedKeys model =
     let
@@ -25,7 +35,7 @@ getDirection pressedKeys =
         direction =
             Keyboard.Arrows.arrowsDirection pressedKeys
     in
-    if List.member direction [ North, East, South, West ] then
+    if List.member direction validDirections then
         Just direction
 
     else
@@ -34,18 +44,8 @@ getDirection pressedKeys =
 
 updateSnakeDirection : Direction -> Snake -> Snake
 updateSnakeDirection direction snake =
-    case ( snake.direction, direction ) of
-        ( West, East ) ->
-            snake
+    if List.member ( snake.direction, direction ) invalidTransitions then
+        snake
 
-        ( East, West ) ->
-            snake
-
-        ( North, South ) ->
-            snake
-
-        ( South, North ) ->
-            snake
-
-        ( _, _ ) ->
-            { snake | direction = direction }
+    else
+        { snake | direction = direction }
