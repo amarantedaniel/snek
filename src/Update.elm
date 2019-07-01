@@ -121,32 +121,16 @@ updateHead : Snake -> Position
 updateHead { head, direction } =
     case direction of
         North ->
-            if head.y - 1 < 0 then
-                { head | y = 19 }
-
-            else
-                { head | y = head.y - 1 }
+            { head | y = modBy 20 (head.y - 1) }
 
         East ->
-            if head.x + 1 > 39 then
-                { head | x = 0 }
-
-            else
-                { head | x = head.x + 1 }
+            { head | x = modBy 40 (head.x + 1) }
 
         South ->
-            if head.y + 1 > 19 then
-                { head | y = 0 }
-
-            else
-                { head | y = head.y + 1 }
+            { head | y = modBy 20 (head.y + 1) }
 
         West ->
-            if head.x - 1 < 0 then
-                { head | x = 39 }
-
-            else
-                { head | x = head.x - 1 }
+            { head | x = modBy 40 (head.x - 1) }
 
         _ ->
             head
@@ -174,12 +158,6 @@ repositionFood snakeAteFood =
 
     else
         Cmd.none
-
-
-checkIfGameOver : Snake -> Bool
-checkIfGameOver snake =
-    snake
-        |> checkIfHitSelf
 
 
 checkIfHitSelf : Snake -> Bool
