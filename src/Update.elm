@@ -1,17 +1,17 @@
 module Update exposing (Msg(..), update)
 
-import Keyboard
-import Keyboard.Arrows exposing (Direction(..))
-import Model exposing (Model, Position, Snake)
+import Keyboard exposing (..)
+import Keyboard.Arrows exposing (arrowKey)
+import Model exposing (Direction(..), Model, Position, Snake)
 import Random
 import Size exposing (gridSize)
-import SnakeDirection exposing (updateLastDirection, updateSnakeDirection)
+import SnakeDirection exposing (updateSnakeDirection)
 import Time
 
 
 type Msg
     = Tick Time.Posix
-    | KeyMsg Keyboard.Msg
+    | KeyDown RawKey
     | NewFood Position
 
 
@@ -25,17 +25,8 @@ update msg model =
             else
                 runLoop model
 
-        KeyMsg keyMsg ->
-            let
-                newPressedKeys =
-                    Keyboard.update keyMsg model.pressedKeys
-            in
-            ( { model
-                | pressedKeys = newPressedKeys
-                , lastDirection = updateLastDirection newPressedKeys model
-              }
-            , Cmd.none
-            )
+        KeyDown key ->
+            ( { model | key = arrowKey key }, Cmd.none )
 
         NewFood food ->
             ( { model | food = food }, Cmd.none )
@@ -45,7 +36,7 @@ runLoop : Model -> ( Model, Cmd Msg )
 runLoop model =
     let
         snake =
-            updateSnakeDirection model.lastDirection model.snake
+            updateSnakeDirection model.key model.snake
 
         newHead =
             updateHead snake
@@ -75,20 +66,17 @@ moveSnake newHead snakeAteFood snake =
 updateHead : Snake -> Position
 updateHead { head, direction } =
     case direction of
-        North ->
+        Up ->
             { head | y = modBy gridSize.height (head.y - 1) }
 
-        East ->
+        Right ->
             { head | x = modBy gridSize.width (head.x + 1) }
 
-        South ->
+        Down ->
             { head | y = modBy gridSize.height (head.y + 1) }
 
-        West ->
+        Left ->
             { head | x = modBy gridSize.width (head.x - 1) }
-
-        _ ->
-            head
 
 
 updateBody : Bool -> Snake -> List Position

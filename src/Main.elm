@@ -29,4 +29,4 @@ init =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch <| [ Sub.map KeyMsg Keyboard.subscriptions, Time.every tickFrequency Tick ]
+    Sub.batch <| [ Keyboard.downs KeyDown, Time.every tickFrequency Tick ]

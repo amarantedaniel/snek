@@ -1,49 +1,42 @@
-module SnakeDirection exposing (updateLastDirection, updateSnakeDirection)
+module SnakeDirection exposing (updateSnakeDirection)
 
-import Keyboard
-import Keyboard.Arrows exposing (Direction(..))
-import Model exposing (Model, Snake)
-
-
-validDirections : List Direction
-validDirections =
-    [ North, East, South, West ]
+import Keyboard exposing (..)
+import Model exposing (Direction(..), Model, Snake)
 
 
-invalidTransitions : List ( Direction, Direction )
 invalidTransitions =
-    [ ( West, East ), ( East, West ), ( North, South ), ( South, North ) ]
+    [ ( Left, Right ), ( Right, Left ), ( Up, Down ), ( Down, Up ) ]
 
 
-updateLastDirection : List Keyboard.Key -> Model -> Direction
-updateLastDirection pressedKeys model =
-    let
-        direction =
-            getDirection pressedKeys
-    in
-    case direction of
-        Just validDirection ->
-            validDirection
-
-        Nothing ->
-            model.lastDirection
+updateSnakeDirection : Maybe Key -> Snake -> Snake
+updateSnakeDirection key snake =
+    key
+        |> arrowToDirection
+        |> Maybe.map (validateNewDirection snake)
+        |> Maybe.withDefault snake
 
 
-getDirection : List Keyboard.Key -> Maybe Direction
-getDirection pressedKeys =
-    let
-        direction =
-            Keyboard.Arrows.arrowsDirection pressedKeys
-    in
-    if List.member direction validDirections then
-        Just direction
+arrowToDirection : Maybe Key -> Maybe Direction
+arrowToDirection key =
+    case key of
+        Just ArrowRight ->
+            Just Right
 
-    else
-        Nothing
+        Just ArrowLeft ->
+            Just Left
+
+        Just ArrowUp ->
+            Just Up
+
+        Just ArrowDown ->
+            Just Down
+
+        _ ->
+            Nothing
 
 
-updateSnakeDirection : Direction -> Snake -> Snake
-updateSnakeDirection direction snake =
+validateNewDirection : Snake -> Direction -> Snake
+validateNewDirection snake direction =
     if List.member ( snake.direction, direction ) invalidTransitions then
         snake
 

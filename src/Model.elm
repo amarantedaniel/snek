@@ -1,17 +1,22 @@
-module Model exposing (Model, Position, Snake, initialModel)
+module Model exposing (Direction(..), Model, Position, Snake, initialModel)
 
-import Keyboard
-import Keyboard.Arrows exposing (Direction(..))
+import Keyboard exposing (Key)
 
 
 type alias Model =
     { count : Float
-    , pressedKeys : List Keyboard.Key
-    , lastDirection : Direction
     , snake : Snake
     , food : Position
     , gameOver : Bool
+    , key : Maybe Key
     }
+
+
+type Direction
+    = Up
+    | Down
+    | Left
+    | Right
 
 
 type alias Snake =
@@ -35,16 +40,15 @@ initialSnake =
         , { x = 1, y = 0 }
         , { x = 1, y = 0 }
         ]
-    , direction = East
+    , direction = Right
     }
 
 
 initialModel : Model
 initialModel =
     { count = 0
-    , pressedKeys = []
     , snake = initialSnake
     , food = { x = 10, y = 10 }
     , gameOver = False
-    , lastDirection = East
+    , key = Nothing
     }
