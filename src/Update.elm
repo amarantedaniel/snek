@@ -3,7 +3,7 @@ module Update exposing (Msg(..), update)
 import Keyboard exposing (..)
 import Keyboard.Arrows exposing (arrowKey)
 import Model exposing (Direction(..), Model, Position, Snake)
-import Random
+import RandomPosition exposing (randomPosition)
 import Size exposing (gridSize)
 import SnakeDirection exposing (updateSnakeDirection)
 import Time
@@ -95,16 +95,8 @@ removeLast list =
 
 repositionFood : Bool -> Cmd Msg
 repositionFood snakeAteFood =
-    let
-        randomWidth =
-            Random.int 0 (gridSize.width - 1)
-
-        randomHeight =
-            Random.int 0 (gridSize.height - 1)
-    in
     if snakeAteFood then
-        Random.generate NewFood <|
-            Random.map2 Position randomWidth randomHeight
+        randomPosition NewFood
 
     else
         Cmd.none
