@@ -3,6 +3,7 @@ module Main exposing (main)
 import Browser
 import Keyboard
 import Model exposing (Model, initialModel)
+import RandomPosition exposing (randomPosition)
 import Time
 import Update exposing (Msg(..), update)
 import View exposing (view)
@@ -24,7 +25,7 @@ main =
 
 init : ( Model, Cmd Msg )
 init =
-    ( initialModel, Cmd.none )
+    ( initialModel, randomPosition NewFood )
 
 
 subscriptions : Model -> Sub Msg
