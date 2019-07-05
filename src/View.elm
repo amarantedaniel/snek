@@ -13,7 +13,7 @@ view model =
     div []
         [ h1 [] [ Html.text "snek" ]
         , svg
-            [ width "50%"
+            [ width "30%"
             , viewBox ("0 0 " ++ String.fromInt (gridSize.width * cellSize) ++ " " ++ String.fromInt (gridSize.height * cellSize))
             ]
             (renderBackground
@@ -73,7 +73,7 @@ renderGameOver gameOver =
         , textAnchor "middle"
         , fill "red"
         , fontWeight "bold"
-        , fontSize "100"
+        , fontSize "50"
         ]
         [ Svg.text "GAME OVER" ]
     ]

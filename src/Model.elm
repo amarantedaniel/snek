@@ -48,7 +48,7 @@ initialModel : Model
 initialModel =
     { count = 0
     , snake = initialSnake
-    , food = { x = 10, y = 10 }
+    , food = { x = 0, y = 0 }
     , gameOver = False
     , key = Nothing
     }

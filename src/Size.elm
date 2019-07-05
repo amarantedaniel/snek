@@ -9,7 +9,7 @@ type alias Size =
 
 gridSize : Size
 gridSize =
-    { width = 40, height = 20 }
+    { width = 20, height = 10 }
 
 
 cellSize : Int
