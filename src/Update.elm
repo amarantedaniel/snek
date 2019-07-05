@@ -2,7 +2,7 @@ module Update exposing (Msg(..), update)
 
 import Keyboard exposing (..)
 import Keyboard.Arrows exposing (arrowKey)
-import Model exposing (Direction(..), Model, Position, Snake)
+import Model exposing (Direction(..), Model, Position, Snake, initialModel)
 import RandomPosition exposing (randomPosition)
 import Size exposing (gridSize)
 import SnakeDirection exposing (updateSnakeDirection)
@@ -19,11 +19,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick time ->
-            if model.gameOver then
-                ( { model | gameOver = not <| shouldRestart model.key }, Cmd.none )
-
-            else
-                runLoop model
+            runLoop model
 
         KeyDown key ->
             ( { model | key = anyKeyOriginal key }, Cmd.none )
@@ -34,6 +30,24 @@ update msg model =
 
 runLoop : Model -> ( Model, Cmd Msg )
 runLoop model =
+    if model.gameOver then
+        runGameOverLoop model
+
+    else
+        runNormalGameLoop model
+
+
+runGameOverLoop : Model -> ( Model, Cmd Msg )
+runGameOverLoop model =
+    if shouldRestart model.key then
+        ( initialModel, randomPosition NewFood )
+
+    else
+        ( model, Cmd.none )
+
+
+runNormalGameLoop : Model -> ( Model, Cmd Msg )
+runNormalGameLoop model =
     let
         snake =
             updateSnakeDirection model.key model.snake
