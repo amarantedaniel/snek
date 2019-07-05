@@ -12,6 +12,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ h1 [] [ Html.text "snek" ]
+        , p [] [ Html.text "Use the arrows to move the snek" ]
         , svg
             [ width "30%"
             , viewBox ("0 0 " ++ String.fromInt (gridSize.width * cellSize) ++ " " ++ String.fromInt (gridSize.height * cellSize))
@@ -21,6 +22,13 @@ view model =
                 ++ renderFood model.food
                 ++ renderGameOver model.gameOver
             )
+        , p []
+            [ if model.gameOver then
+                Html.text "Press space to play again"
+
+              else
+                Html.text ""
+            ]
         ]
 
 

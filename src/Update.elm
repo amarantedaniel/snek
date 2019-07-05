@@ -20,13 +20,13 @@ update msg model =
     case msg of
         Tick time ->
             if model.gameOver then
-                ( model, Cmd.none )
+                ( { model | gameOver = not <| shouldRestart model.key }, Cmd.none )
 
             else
                 runLoop model
 
         KeyDown key ->
-            ( { model | key = arrowKey key }, Cmd.none )
+            ( { model | key = anyKeyOriginal key }, Cmd.none )
 
         NewFood food ->
             ( { model | food = food }, Cmd.none )
@@ -105,3 +105,8 @@ repositionFood snakeAteFood =
 checkIfHitSelf : Snake -> Bool
 checkIfHitSelf snake =
     List.member snake.head snake.body
+
+
+shouldRestart : Maybe Key -> Bool
+shouldRestart key =
+    key == Just Spacebar
