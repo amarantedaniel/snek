@@ -37,7 +37,7 @@ renderBackground =
     [ rect
         [ width (String.fromInt (gridSize.width * cellSize))
         , height (String.fromInt (gridSize.height * cellSize))
-        , Svg.Attributes.style "fill:#8cbf00"
+        , fill "#8cbf00"
         ]
         []
     ]
@@ -55,7 +55,8 @@ renderSnakePart position =
         , height (String.fromInt cellSize)
         , x (String.fromInt (position.x * cellSize))
         , y (String.fromInt (position.y * cellSize))
-        , Svg.Attributes.style "fill:black;stroke:gray"
+        , fill "black"
+        , stroke "gray"
         ]
         []
 
