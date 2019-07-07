@@ -14,7 +14,7 @@ view model =
         [ h1 [] [ Html.text "snek" ]
         , p [] [ Html.text "Use the arrows to move the snek" ]
         , svg
-            [ width "30%"
+            [ class "grid"
             , viewBox ("0 0 " ++ String.fromInt (gridSize.width * cellSize) ++ " " ++ String.fromInt (gridSize.height * cellSize))
             ]
             (renderBackground
