@@ -31,6 +31,18 @@ arrowToDirection key =
         Just ArrowDown ->
             Just Down
 
+        Just (Character "j") ->
+            Just Down
+
+        Just (Character "k") ->
+            Just Up
+
+        Just (Character "l") ->
+            Just Right
+
+        Just (Character "h") ->
+            Just Left
+
         _ ->
             Nothing
 
