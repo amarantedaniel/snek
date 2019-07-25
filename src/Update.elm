@@ -1,8 +1,9 @@
 module Update exposing (Msg(..), update)
 
+import GameMode exposing (updateGameMode)
 import Keyboard exposing (..)
 import Keyboard.Arrows exposing (arrowKey)
-import Model exposing (Direction(..), Model, Position, Snake, initialModel)
+import Model exposing (Direction(..), Mode, Model, Position, Snake, initialModel)
 import RandomPosition exposing (randomPosition)
 import Size exposing (gridSize)
 import SnakeDirection exposing (updateSnakeDirection)
@@ -22,7 +23,12 @@ update msg model =
             runLoop model
 
         KeyDown key ->
-            ( { model | key = anyKeyOriginal key }, Cmd.none )
+            ( { model
+                | key = anyKeyOriginal key
+                , mode = updateGameMode (anyKeyOriginal key)
+              }
+            , Cmd.none
+            )
 
         NewFood food ->
             ( { model | food = food }, Cmd.none )

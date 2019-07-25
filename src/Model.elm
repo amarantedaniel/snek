@@ -1,4 +1,4 @@
-module Model exposing (Direction(..), Model, Position, Snake, initialModel)
+module Model exposing (Direction(..), Mode(..), Model, Position, Snake, initialModel)
 
 import Keyboard exposing (Key)
 
@@ -9,6 +9,7 @@ type alias Model =
     , food : Position
     , gameOver : Bool
     , key : Maybe Key
+    , mode : Mode
     }
 
 
@@ -32,6 +33,11 @@ type alias Position =
     }
 
 
+type Mode
+    = Normal
+    | MasterHacker
+
+
 initialSnake : Snake
 initialSnake =
     { head = { x = 3, y = 0 }
@@ -51,4 +57,5 @@ initialModel =
     , food = { x = 0, y = 0 }
     , gameOver = False
     , key = Nothing
+    , mode = Normal
     }

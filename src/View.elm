@@ -1,7 +1,8 @@
 module View exposing (view)
 
 import Html exposing (..)
-import Model exposing (Model, Position, Snake)
+import Html.Attributes exposing (src)
+import Model exposing (Mode(..), Model, Position, Snake)
 import Size exposing (cellSize, gridSize)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -29,6 +30,11 @@ view model =
               else
                 Html.text ""
             ]
+        , if model.mode == MasterHacker then
+            img [ class "master-hacker", src "https://i.imgur.com/iVHfwLc.gif" ] []
+
+          else
+            Html.text ""
         ]
 
 
