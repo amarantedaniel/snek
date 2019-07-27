@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: circleci/node:11.12.0
+    - image: amarantedaniel/create-elm-app:latest
 
 version: 2
 jobs:
@@ -19,6 +19,18 @@ jobs:
           paths:
             - "~/repo"
 
+  test:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          keys:
+            - source-{{ .Branch }}-{{ .Revision }}
+            - source-{{ .Branch }}-
+            - source-
+      - run:
+          name: Test
+          command: elm-app test
+
   build:
     <<: *defaults
     steps:
@@ -26,7 +38,7 @@ jobs:
           key: source-{{ .Branch }}-{{ .Revision }}
       - run:
           name: Build app
-          command: npx elm-app build
+          command: elm-app build
       - persist_to_workspace:
           root: ~/repo
           paths:
@@ -38,6 +50,9 @@ workflows:
   build:
     jobs:
       - checkout_code
-      - build:
+      - test:
           requires:
             - checkout_code
+      - build:
+          requires:
+            - test
