@@ -1,0 +1,43 @@
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: circleci/node:11.12.0
+
+version: 2
+jobs:
+  checkout_code:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          keys:
+            - source-{{ .Branch }}-{{ .Revision }}
+            - source-{{ .Branch }}-
+            - source-
+      - checkout
+      - save_cache:
+          key: source-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - "~/repo"
+
+  build:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: source-{{ .Branch }}-{{ .Revision }}
+      - run:
+          name: Build app
+          command: npx elm-app build
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - build
+            - elm.json
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - checkout_code
+      - build:
+          requires:
+            - checkout_code
