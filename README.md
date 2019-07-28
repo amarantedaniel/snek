@@ -1,4 +1,5 @@
 # Snek
+[![CircleCI](https://circleci.com/gh/amarantedaniel/snek.svg?style=svg)](https://circleci.com/gh/amarantedaniel/snek)
 
 A snake clone in elm
 
